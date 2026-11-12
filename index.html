@@ -76,11 +76,6 @@
                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5M12 15V3"></path></svg>
                         <span>Install app</span>
                     </button>
-                    <button id="downloadBackupBtn" class="backup-btn" type="button">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5M12 15V3"></path></svg>
-                        <span>Download backup</span>
-                    </button>
-                    <span id="appActionStatus" class="app-action-status" role="status" aria-live="polite" hidden></span>
                 </div>
             </div>
 
@@ -193,8 +188,6 @@
         const monthProgressCaption = document.getElementById('monthProgressCaption');
         const quickActivityButtons = document.querySelectorAll('.quick-activity-btn');
         const installAppBtn = document.getElementById('installAppBtn');
-        const downloadBackupBtn = document.getElementById('downloadBackupBtn');
-        const appActionStatus = document.getElementById('appActionStatus');
 
         const STORAGE_KEY = 'todo-list-items';
         const PROGRESS_STORAGE_KEY = 'todo-list-progress-history';
@@ -241,44 +234,6 @@
 
         function saveProgressHistory() {
             localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(progressHistory));
-        }
-
-        function downloadBackup() {
-            let downloadUrl;
-            try {
-                const exportedAt = new Date();
-                const backup = {
-                    format: 'taskflow-backup',
-                    version: 1,
-                    exportedAt: exportedAt.toISOString(),
-                    tasks,
-                    progressHistory,
-                    theme: localStorage.getItem(THEME_STORAGE_KEY) || 'light',
-                };
-                const backupBlob = new Blob([JSON.stringify(backup, null, 2)], {
-                    type: 'application/json',
-                });
-                downloadUrl = URL.createObjectURL(backupBlob);
-
-                const downloadLink = document.createElement('a');
-                downloadLink.href = downloadUrl;
-                downloadLink.download = `taskflow-backup-${exportedAt.toISOString().slice(0, 10)}.json`;
-                downloadLink.hidden = true;
-                document.body.append(downloadLink);
-                downloadLink.click();
-                downloadLink.remove();
-                window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
-
-                appActionStatus.textContent = 'Backup downloaded.';
-                appActionStatus.hidden = false;
-            } catch (error) {
-                if (downloadUrl) {
-                    URL.revokeObjectURL(downloadUrl);
-                }
-                console.error('Unable to download the TaskFlow backup:', error);
-                appActionStatus.textContent = 'Unable to download the backup. Check your browser settings and try again.';
-                appActionStatus.hidden = false;
-            }
         }
 
         function initializeProgressHistory() {
@@ -860,32 +815,15 @@
 
         installAppBtn.addEventListener('click', async () => {
             if (!installPromptEvent) {
-                appActionStatus.textContent = location.protocol === 'file:'
-                    ? 'This file:// page cannot be installed. Open TaskFlow from its HTTPS site or localhost.'
-                    : 'The install prompt is unavailable. Use your browser’s Install app option if available.';
-                appActionStatus.hidden = false;
+                window.alert('To install TaskFlow, use your browser menu and choose “Install app” or “Add to Home Screen”.');
                 return;
             }
 
-            const installPrompt = installPromptEvent;
+            installPromptEvent.prompt();
+            await installPromptEvent.userChoice;
             installPromptEvent = null;
-            try {
-                installPrompt.prompt();
-                const choice = await installPrompt.userChoice;
-                if (choice.outcome === 'accepted') {
-                    appActionStatus.textContent = 'TaskFlow was installed.';
-                    installAppBtn.hidden = true;
-                } else {
-                    appActionStatus.textContent = 'Installation was not completed.';
-                }
-            } catch (error) {
-                console.error('Unable to open the TaskFlow install prompt:', error);
-                appActionStatus.textContent = 'Could not open the install prompt. Try your browser’s Install app option.';
-            }
-            appActionStatus.hidden = false;
+            installAppBtn.hidden = true;
         });
-
-        downloadBackupBtn.addEventListener('click', downloadBackup);
 
         window.addEventListener('appinstalled', () => {
             installPromptEvent = null;
