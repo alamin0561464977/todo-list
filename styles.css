@@ -444,6 +444,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        flex-wrap: wrap;
         gap: 8px;
     }
 
@@ -478,16 +479,30 @@
         border-radius: 50%;
     }
 
-    .install-btn {
+    .install-btn:not([hidden]),
+    .backup-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
         flex-shrink: 0;
         color: white;
         background: #0f766e;
     }
 
-    .install-btn:not([hidden]) {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
+    .backup-btn {
+        color: #115e59;
+        background: #ccfbf1;
+    }
+
+    .app-action-status:not([hidden]) {
+        width: 100%;
+        color: #475569;
+        font-size: 0.85rem;
+        text-align: right;
+    }
+
+    body.dark-mode .app-action-status {
+        color: #cbd5e1;
     }
 
     body.dark-mode {

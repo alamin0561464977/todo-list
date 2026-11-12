@@ -11,6 +11,7 @@ TaskFlow is a lightweight, installable daily planner for organizing tasks and bu
 - Add common routines from Quick activities.
 - View daily mountain-style progress, a day-by-day weekly bar chart, and a monthly progress chart.
 - Switch between light and dark themes.
+- Download a JSON backup of tasks, progress history, and theme settings.
 - Install the app on supported devices and use its cached app shell offline.
 - Use a responsive interface on desktop and mobile.
 
@@ -36,6 +37,8 @@ TaskFlow is a static website. No package installation or compilation is needed.
 3. Open [http://localhost:8000](http://localhost:8000) in a modern browser.
 
 You can also serve the project with a static hosting service or a development server such as the VS Code Live Server extension. A web server is required for the service worker; opening `index.html` directly as a `file://` URL will not enable offline installation.
+
+The **Install app** button requires TaskFlow to be opened over HTTPS or `localhost` in a supported browser. **Download backup** works from the local page and saves a JSON file that includes tasks, progress history, and theme preference.
 
 ## Using TaskFlow
 
