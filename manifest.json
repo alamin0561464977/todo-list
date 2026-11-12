@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "Daily To-Do Planner",
+  "short_name": "To-Do Planner",
+  "description": "A simple daily planner for tasks, priorities, and activities.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "./app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
