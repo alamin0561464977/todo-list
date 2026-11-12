@@ -193,6 +193,7 @@
         const PROGRESS_STORAGE_KEY = 'todo-list-progress-history';
         const THEME_STORAGE_KEY = 'todo-list-theme';
         let currentFilter = 'all';
+        let newlyAddedTaskId = null;
         let installPromptEvent;
         const ICON_PATHS = {
             moon: '<path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13z"></path>',
@@ -584,6 +585,8 @@
         }
 
         function renderTasks() {
+            const enteringTaskId = newlyAddedTaskId;
+            newlyAddedTaskId = null;
             taskList.innerHTML = '';
             const visibleTasks = getVisibleTasks();
 
@@ -603,6 +606,9 @@
             visibleTasks.forEach((task) => {
                 const item = document.createElement('li');
                 item.className = 'task-item' + (task.completed ? ' completed' : '');
+                if (task.id === enteringTaskId) {
+                    item.classList.add('task-item-enter');
+                }
 
                 const main = document.createElement('div');
                 main.className = 'task-main';
@@ -711,6 +717,7 @@
             tasks.unshift(task);
             progressHistory.push({ taskId: task.id, createdAt, completedAt: null });
             saveProgressHistory();
+            newlyAddedTaskId = task.id;
 
             if (!taskText) {
                 taskInput.value = '';

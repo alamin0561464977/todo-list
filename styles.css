@@ -27,6 +27,25 @@
         backdrop-filter: blur(12px);
     }
 
+    @keyframes slide-in-down {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fade-in-up {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes task-enter {
+        from { opacity: 0; transform: translateY(8px) scale(0.99); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .site-header {
+        animation: slide-in-down 320ms ease-out both;
+    }
+
     .site-nav {
         width: min(1120px, 100%);
         min-height: 40px;
@@ -117,6 +136,15 @@
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         padding: 24px;
     }
+
+    .app,
+    .side-card {
+        animation: fade-in-up 420ms ease-out both;
+    }
+
+    #today-progress { animation-delay: 40ms; }
+    #planner { animation-delay: 80ms; }
+    #quick-activities { animation-delay: 120ms; }
 
     .planner-layout {
         width: min(96vw, 1120px);
@@ -839,6 +867,11 @@
         background: #f3f4f6;
         border-radius: 10px;
         padding: 10px 12px;
+        transition: background-color 200ms ease, box-shadow 200ms ease;
+    }
+
+    .task-item-enter {
+        animation: task-enter 240ms ease-out both;
     }
 
     .task-main {
@@ -865,6 +898,7 @@
         word-break: break-word;
         font-size: 1rem;
         font-weight: 700;
+        transition: color 200ms ease;
     }
 
     .task-meta {
@@ -1002,5 +1036,17 @@
 
         .side-card {
             padding: 16px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-delay: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            scroll-behavior: auto !important;
+            transition-duration: 0.01ms !important;
         }
     }
