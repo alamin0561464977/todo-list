@@ -1,7 +1,8 @@
-const CACHE_NAME = 'daily-todo-planner-v8';
+const CACHE_NAME = 'daily-todo-planner-v29';
 const APP_FILES = [
     new URL('./', self.registration.scope).href,
     new URL('./index.html', self.registration.scope).href,
+    new URL('./styles.css', self.registration.scope).href,
     new URL('./manifest.json', self.registration.scope).href,
     new URL('./app-icon.svg', self.registration.scope).href,
 ];

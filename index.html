@@ -3,581 +3,94 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>To-Do List</title>
+    <title>TaskFlow | Daily Planner</title>
     <meta name="description" content="A simple daily planner to organize tasks, priorities, and activities." />
-    <meta name="theme-color" content="#4f46e5" />
+    <meta name="theme-color" content="#0f766e" />
     <link rel="manifest" href="./manifest.json" />
     <link rel="icon" href="./app-icon.svg" type="image/svg+xml" />
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            font-family: Arial, Helvetica, sans-serif;
-            background-image: linear-gradient(rgba(15, 23, 42, 0.55), rgba(15, 23, 42, 0.55)),
-                              url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: #1f2937;
-        }
-
-        .app {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.94);
-            border-radius: 18px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            padding: 24px;
-        }
-
-        .planner-layout {
-            width: min(96vw, 1120px);
-            display: grid;
-            grid-template-columns: minmax(190px, 240px) minmax(0, 560px) minmax(190px, 240px);
-            align-items: start;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .side-card {
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.92);
-            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.16);
-            color: #1f2937;
-        }
-
-        .side-card h2 {
-            margin: 0 0 8px;
-            font-size: 1.15rem;
-        }
-
-        .side-card p {
-            margin: 0 0 14px;
-            color: #6b7280;
-            font-size: 0.9rem;
-            line-height: 1.45;
-        }
-
-        .today-date {
-            display: block;
-            margin-bottom: 18px;
-            color: #4f46e5;
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-
-        .progress-track {
-            height: 10px;
-            overflow: hidden;
-            border-radius: 999px;
-            background: #e5e7eb;
-        }
-
-        .progress-fill {
-            width: 0;
-            height: 100%;
-            border-radius: inherit;
-            background: linear-gradient(90deg, #4f46e5, #8b5cf6);
-            transition: width 0.25s ease;
-        }
-
-        .progress-caption {
-            display: block;
-            margin-top: 8px;
-            color: #4b5563;
-            font-size: 0.8rem;
-        }
-
-        .side-tip {
-            margin-top: 18px;
-            padding: 12px;
-            border-radius: 12px;
-            background: #eef2ff;
-            color: #4338ca;
-            font-size: 0.85rem;
-            line-height: 1.45;
-        }
-
-        .quick-activities {
-            display: grid;
-            gap: 9px;
-        }
-
-        .quick-activity-btn {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            padding: 10px;
-            background: #f3f4f6;
-            color: #374151;
-            text-align: left;
-            font-size: 0.88rem;
-        }
-
-        .quick-activity-btn:hover {
-            background: #e0e7ff;
-        }
-
-        .quick-activity-btn span:first-child {
-            font-size: 1.15rem;
-        }
-
-        .app-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 8px;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 2rem;
-        }
-
-        .theme-btn {
-            flex-shrink: 0;
-            color: #1f2937;
-            background: #e5e7eb;
-        }
-
-        .install-btn {
-            flex-shrink: 0;
-            color: white;
-            background: #4f46e5;
-        }
-
-        body.dark-mode {
-            color: #f3f4f6;
-            background-image: linear-gradient(rgba(8, 15, 32, 0.68), rgba(8, 15, 32, 0.68)),
-                              url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1600&q=80');
-        }
-
-        body.dark-mode .app {
-            background: rgba(24, 31, 45, 0.96);
-            color: #f3f4f6;
-        }
-
-        body.dark-mode .side-card {
-            border-color: #3b465b;
-            background: rgba(24, 31, 45, 0.96);
-            color: #f3f4f6;
-        }
-
-        body.dark-mode .side-card p,
-        body.dark-mode .progress-caption {
-            color: #cbd5e1;
-        }
-
-        body.dark-mode .today-date {
-            color: #c4b5fd;
-        }
-
-        body.dark-mode .progress-track {
-            background: #374151;
-        }
-
-        body.dark-mode .side-tip {
-            background: #30304f;
-            color: #ddd6fe;
-        }
-
-        body.dark-mode .quick-activity-btn {
-            background: #30394b;
-            color: #f3f4f6;
-        }
-
-        body.dark-mode .quick-activity-btn:hover {
-            background: #414b65;
-        }
-
-        body.dark-mode .stats,
-        body.dark-mode .checkbox-wrap {
-            color: #d1d5db;
-        }
-
-        body.dark-mode .stat-box,
-        body.dark-mode .task-item,
-        body.dark-mode .empty,
-        body.dark-mode .filter-btn,
-        body.dark-mode .theme-btn {
-            background: #30394b;
-            color: #f3f4f6;
-        }
-
-        body.dark-mode input[type="text"],
-        body.dark-mode select,
-        body.dark-mode input[type="time"] {
-            border-color: #4b5563;
-            background: #202938;
-            color: #f9fafb;
-            color-scheme: dark;
-        }
-
-        body.dark-mode .motivational-box {
-            background: linear-gradient(135deg, #3f351e, #493126);
-            border-color: #80652c;
-            color: #fde68a;
-        }
-
-        body.dark-mode .funny-note {
-            background: #3b2d50;
-            color: #e9d5ff;
-        }
-
-        body.dark-mode .filter-btn.active {
-            background: #6366f1;
-            color: white;
-        }
-
-        body.dark-mode .clear-btn {
-            background: #59451f;
-            color: #fde68a;
-        }
-
-        body.dark-mode .edit-btn {
-            background: #253b5b;
-            color: #bfdbfe;
-        }
-
-        body.dark-mode .delete-btn {
-            background: #572d36;
-            color: #fecaca;
-        }
-
-        body.dark-mode .task-item.completed .task-text {
-            color: #9ca3af;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 18px;
-            font-size: 0.9rem;
-            color: #4b5563;
-        }
-
-        .stat-box {
-            background: #eef2ff;
-            border-radius: 10px;
-            padding: 10px 12px;
-            flex: 1;
-            text-align: center;
-            font-weight: 700;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
-
-        input[type="text"],
-        select,
-        input[type="time"] {
-            flex: 1;
-            padding: 12px 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 1rem;
-            outline: none;
-            background: white;
-        }
-
-        input[type="text"]:focus,
-        select:focus,
-        input[type="time"]:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
-        }
-
-        .options-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 18px;
-            flex-wrap: wrap;
-        }
-
-        .checkbox-wrap {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #374151;
-            font-weight: 600;
-        }
-
-        .funny-note {
-            font-size: 0.8rem;
-            color: #7c3aed;
-            font-weight: 700;
-            background: #f3e8ff;
-            border-radius: 999px;
-            padding: 6px 10px;
-        }
-
-        .motivational-box {
-            margin: 0 0 18px;
-            padding: 12px 14px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(254, 243, 199, 0.9));
-            border: 1px solid rgba(251, 191, 36, 0.5);
-            text-align: center;
-            font-weight: 700;
-            color: #7c2d12;
-            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.15);
-        }
-
-        .success-badge {
-            display: none;
-            margin-top: 14px;
-            text-align: center;
-            font-size: 2rem;
-            animation: bounce 0.8s ease-in-out;
-        }
-
-        @keyframes bounce {
-            0% { transform: scale(0.5); opacity: 0; }
-            60% { transform: scale(1.15); opacity: 1; }
-            100% { transform: scale(1); }
-        }
-
-        .checkbox-wrap input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: #4f46e5;
-        }
-
-        button {
-            border: none;
-            border-radius: 10px;
-            padding: 10px 14px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: transform 0.15s ease, opacity 0.15s ease;
-        }
-
-        button:hover {
-            transform: translateY(-1px);
-        }
-
-        .add-btn {
-            background: #4f46e5;
-            color: white;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn,
-        .clear-btn,
-        .edit-btn,
-        .delete-btn {
-            color: #1f2937;
-            background: #e5e7eb;
-        }
-
-        .filter-btn.active {
-            background: #4f46e5;
-            color: white;
-        }
-
-        .clear-btn {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .task-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .task-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            background: #f3f4f6;
-            border-radius: 10px;
-            padding: 10px 12px;
-        }
-
-        .task-main {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-        }
-
-        .task-main input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .task-body {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .task-text {
-            word-break: break-word;
-            font-size: 1rem;
-        }
-
-        .task-meta {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            font-size: 0.75rem;
-        }
-
-        .tag {
-            display: inline-block;
-            border-radius: 999px;
-            padding: 3px 8px;
-            font-weight: 700;
-        }
-
-        .tag.priority-low { background: #dcfce7; color: #166534; }
-        .tag.priority-medium { background: #fef3c7; color: #92400e; }
-        .tag.priority-high { background: #fee2e2; color: #991b1b; }
-        .tag.all-day { background: #dbeafe; color: #1d4ed8; }
-        .tag.time-limit { background: #ede9fe; color: #5b21b6; }
-
-        .task-item.completed .task-text {
-            text-decoration: line-through;
-            color: #6b7280;
-        }
-
-        .task-actions {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .edit-btn {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .delete-btn {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .empty {
-            text-align: center;
-            color: #6b7280;
-            padding: 14px;
-            background: #f9fafb;
-            border-radius: 10px;
-        }
-
-        @media (max-width: 1000px) {
-            body {
-                padding: 24px 0;
-            }
-
-            .planner-layout {
-                width: min(92vw, 760px);
-                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-            }
-
-            .app {
-                grid-column: 1 / -1;
-                grid-row: 1;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .planner-layout {
-                grid-template-columns: minmax(0, 1fr);
-            }
-
-            .app-header {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .header-actions {
-                justify-content: flex-start;
-                flex-wrap: wrap;
-            }
-
-            .app {
-                grid-column: auto;
-            }
-
-            .side-card {
-                padding: 16px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
+    <header class="site-header">
+        <nav class="site-nav" aria-label="Main navigation">
+            <a class="site-brand" href="#planner">
+                <img src="./app-icon.svg" alt="" aria-hidden="true" />
+                <span>TaskFlow</span>
+            </a>
+            <div class="site-menu">
+                <div class="site-links">
+                    <a href="#planner">Tasks</a>
+                    <a href="#today-progress">Progress</a>
+                    <a href="#quick-activities">Quick activities</a>
+                </div>
+                <button id="themeToggle" class="theme-btn icon-button" type="button" aria-label="Switch to dark mode" title="Switch to dark mode" aria-pressed="false">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13z"></path></svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
     <div class="planner-layout">
-        <aside class="side-card" aria-label="Today's progress">
+        <aside id="today-progress" class="side-card" aria-label="Today's progress">
             <h2>📈 Today's progress</h2>
             <span id="todayDate" class="today-date"></span>
-            <div class="progress-track" role="progressbar" aria-label="Tasks completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                <div id="progressFill" class="progress-fill"></div>
+            <div id="dailyProgressChart" class="daily-mountain-chart" role="progressbar" aria-label="Daily task completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="mountain-landscape" aria-hidden="true">
+                    <div class="mountain-progress-fill"></div>
+                </div>
+                <span id="dailyProgressPercent" class="mountain-value">0%</span>
             </div>
             <span id="progressCaption" class="progress-caption">0% complete · Add a task to get started</span>
+            <section class="period-progress" aria-labelledby="periodProgressTitle">
+                <h3 id="periodProgressTitle">Weekly &amp; monthly progress</h3>
+                <div class="period-card">
+                    <div class="period-heading">
+                        <h4 id="weekProgressHeading">This week</h4>
+                        <span id="weekProgressPercent" class="period-percent">0%</span>
+                    </div>
+                    <div id="weekProgressChart" class="period-chart" role="img" aria-label="Weekly task completion by day"></div>
+                    <span id="weekProgressCaption" class="progress-caption">Completed 0 of 0 tasks tracked this week</span>
+                </div>
+                <div class="period-card">
+                    <div class="period-heading">
+                        <h4 id="monthProgressHeading">This month</h4>
+                        <span id="monthProgressPercent" class="period-percent">0%</span>
+                    </div>
+                    <div id="monthProgressChart" class="period-chart" role="img" aria-label="Monthly task completion by week"></div>
+                    <span id="monthProgressCaption" class="progress-caption">Completed 0 of 0 tasks tracked this month</span>
+                </div>
+                <div class="chart-legend" aria-hidden="true">
+                    <span><i class="legend-swatch completed"></i>Completed</span>
+                    <span><i class="legend-swatch remaining"></i>Remaining</span>
+                </div>
+                <p class="tracking-note">Existing tasks start tracking today; older dates are unavailable.</p>
+            </section>
             <div class="side-tip">✨ Try this: pick one important task and give it your full focus for 20 minutes.</div>
         </aside>
 
-        <main class="app">
+        <main id="planner" class="app">
             <div class="app-header">
-                <h1>To-Do List</h1>
+                <h1>TaskFlow</h1>
                 <div class="header-actions">
-                    <button id="installAppBtn" class="install-btn" type="button" hidden>Install app</button>
-                    <button id="themeToggle" class="theme-btn" type="button" aria-pressed="false">🌙 Dark mode</button>
+                    <button id="installAppBtn" class="install-btn" type="button" hidden>
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5M12 15V3"></path></svg>
+                        <span>Install app</span>
+                    </button>
                 </div>
             </div>
 
             <div class="motivational-box">“Small steps every day build a big success story.”</div>
 
             <div class="stats">
-                <div class="stat-box">Total: <span id="totalCount">0</span></div>
-                <div class="stat-box">Done: <span id="doneCount">0</span></div>
-                <div class="stat-box">Left: <span id="leftCount">0</span></div>
+                <div class="stat-box">
+                    <strong>Total:</strong><strong id="totalCount">0</strong>
+                </div>
+                <div class="stat-box">
+                    <strong>Done:</strong><strong id="doneCount">0</strong>
+                </div>
+                <div class="stat-box">
+                    <strong>Left:</strong><strong id="leftCount">0</strong>
+                </div>
             </div>
 
             <div class="input-row">
@@ -588,12 +101,16 @@
                     <option value="high">High priority</option>
                 </select>
                 <input id="taskTime" type="time" aria-label="Task time limit" />
-                <button class="add-btn" id="addBtn">Add</button>
+                <button class="add-btn" id="addBtn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+                    <span>Add</span>
+                </button>
             </div>
 
             <div class="options-row">
                 <label class="checkbox-wrap">
                     <input id="allDayToggle" type="checkbox" />
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>
                     <span>All-day activity</span>
                 </label>
                 <div id="funnyNote" class="funny-note">Goal: survive the day with snacks.</div>
@@ -601,11 +118,23 @@
 
             <div class="controls">
                 <div class="filter-group" aria-label="Filter tasks">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="active">Active</button>
-                    <button class="filter-btn" data-filter="completed">Done</button>
+                    <button class="filter-btn active" data-filter="all" aria-pressed="true">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"></path></svg>
+                        <span>All</span>
+                    </button>
+                    <button class="filter-btn" data-filter="active" aria-pressed="false">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle></svg>
+                        <span>Active</span>
+                    </button>
+                    <button class="filter-btn" data-filter="completed" aria-pressed="false">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+                        <span>Done</span>
+                    </button>
                 </div>
-                <button class="clear-btn" id="clearCompletedBtn">Clear completed</button>
+                <button class="clear-btn" id="clearCompletedBtn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m5 4v6m4-6v6"></path></svg>
+                    <span>Clear completed</span>
+                </button>
             </div>
 
             <div id="successBadge" class="success-badge" aria-live="polite">🎉 You did it!</div>
@@ -613,7 +142,7 @@
             <ul id="taskList" class="task-list" aria-live="polite"></ul>
         </main>
 
-        <aside class="side-card" aria-label="Quick activities">
+        <aside id="quick-activities" class="side-card" aria-label="Quick activities">
             <h2>⚡ Quick activities</h2>
             <p>Tap one to add it straight to your task list.</p>
             <div class="quick-activities">
@@ -622,6 +151,12 @@
                 <button class="quick-activity-btn" data-quick-task="Take a short walk"><span>🚶</span><span>Take a short walk</span></button>
                 <button class="quick-activity-btn" data-quick-task="Read for 10 minutes"><span>📚</span><span>Read for 10 minutes</span></button>
                 <button class="quick-activity-btn" data-quick-task="Tidy one small space"><span>🧹</span><span>Tidy one small space</span></button>
+                <button class="quick-activity-btn" data-quick-task="Check today's calendar"><span>🗓️</span><span>Check calendar</span></button>
+                <button class="quick-activity-btn" data-quick-task="Choose today's top three priorities"><span>🎯</span><span>Set top priorities</span></button>
+                <button class="quick-activity-btn" data-quick-task="Take a meal break"><span>🍽️</span><span>Take a meal break</span></button>
+                <button class="quick-activity-btn" data-quick-task="Take a 5-minute screen break"><span>👀</span><span>Screen break</span></button>
+                <button class="quick-activity-btn" data-quick-task="Reply to one important message"><span>📨</span><span>Reply to a message</span></button>
+                <button class="quick-activity-btn" data-quick-task="Prepare one thing for tomorrow"><span>🌙</span><span>Prepare for tomorrow</span></button>
             </div>
         </aside>
     </div>
@@ -638,21 +173,46 @@
         const leftCount = document.getElementById('leftCount');
         const clearCompletedBtn = document.getElementById('clearCompletedBtn');
         const filterButtons = document.querySelectorAll('.filter-btn');
+        const navigationLinks = document.querySelectorAll('.site-links a');
         const funnyNote = document.getElementById('funnyNote');
         const successBadge = document.getElementById('successBadge');
         const themeToggle = document.getElementById('themeToggle');
-        const progressFill = document.getElementById('progressFill');
-        const progressTrack = document.querySelector('.progress-track');
+        const dailyProgressChart = document.getElementById('dailyProgressChart');
+        const dailyProgressPercent = document.getElementById('dailyProgressPercent');
         const progressCaption = document.getElementById('progressCaption');
+        const weekProgressChart = document.getElementById('weekProgressChart');
+        const weekProgressPercent = document.getElementById('weekProgressPercent');
+        const weekProgressCaption = document.getElementById('weekProgressCaption');
+        const monthProgressChart = document.getElementById('monthProgressChart');
+        const monthProgressPercent = document.getElementById('monthProgressPercent');
+        const monthProgressCaption = document.getElementById('monthProgressCaption');
         const quickActivityButtons = document.querySelectorAll('.quick-activity-btn');
         const installAppBtn = document.getElementById('installAppBtn');
 
         const STORAGE_KEY = 'todo-list-items';
+        const PROGRESS_STORAGE_KEY = 'todo-list-progress-history';
         const THEME_STORAGE_KEY = 'todo-list-theme';
         let currentFilter = 'all';
         let installPromptEvent;
+        const ICON_PATHS = {
+            moon: '<path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13z"></path>',
+            sun: '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>',
+            edit: '<path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"></path>',
+            delete: '<path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m5 4v6m4-6v6"></path>',
+        };
+
+        function iconMarkup(name) {
+            return `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[name]}</svg>`;
+        }
+
+        function setIconButton(button, iconName, label) {
+            button.innerHTML = iconMarkup(iconName);
+            button.setAttribute('aria-label', label);
+            button.title = label;
+        }
 
         let tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        let progressHistory = JSON.parse(localStorage.getItem(PROGRESS_STORAGE_KEY) || '[]');
         document.getElementById('todayDate').textContent = new Date().toLocaleDateString(undefined, {
             weekday: 'long',
             month: 'long',
@@ -662,13 +222,296 @@
         function setTheme(theme) {
             const isDark = theme === 'dark';
             document.body.classList.toggle('dark-mode', isDark);
-            themeToggle.textContent = isDark ? '☀️ Light mode' : '🌙 Dark mode';
+            setIconButton(themeToggle, isDark ? 'sun' : 'moon', isDark ? 'Switch to light mode' : 'Switch to dark mode');
             themeToggle.setAttribute('aria-pressed', String(isDark));
             localStorage.setItem(THEME_STORAGE_KEY, isDark ? 'dark' : 'light');
         }
 
         function saveTasks() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        }
+
+        function saveProgressHistory() {
+            localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(progressHistory));
+        }
+
+        function initializeProgressHistory() {
+            const trackedTaskIds = new Set(progressHistory.map((entry) => entry.taskId));
+            const trackingStartedAt = Date.now();
+            let tasksChanged = false;
+            let historyChanged = false;
+
+            tasks.forEach((task) => {
+                if (trackedTaskIds.has(task.id)) {
+                    return;
+                }
+
+                if (!Number.isFinite(task.createdAt)) {
+                    task.createdAt = trackingStartedAt;
+                    tasksChanged = true;
+                }
+                progressHistory.push({
+                    taskId: task.id,
+                    createdAt: task.createdAt,
+                    completedAt: task.completed ? trackingStartedAt : null,
+                });
+                trackedTaskIds.add(task.id);
+                historyChanged = true;
+            });
+
+            if (tasksChanged) {
+                saveTasks();
+            }
+            if (historyChanged) {
+                saveProgressHistory();
+            }
+        }
+
+        initializeProgressHistory();
+
+        function getPeriodBounds(period) {
+            const today = new Date();
+            if (period === 'week') {
+                const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+                const end = new Date(start);
+                end.setDate(end.getDate() + 7);
+                return { start: start.getTime(), end: end.getTime() };
+            }
+
+            const start = new Date(today.getFullYear(), today.getMonth(), 1);
+            const end = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+            return { start: start.getTime(), end: end.getTime() };
+        }
+
+        function updatePeriodProgress(period, chart, percentLabel, caption) {
+            const { start, end } = getPeriodBounds(period);
+            const periodTasks = progressHistory.filter((entry) => entry.createdAt >= start && entry.createdAt < end);
+            let labels;
+            if (period === 'week') {
+                labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            } else {
+                const monthStart = new Date(start);
+                const offset = (monthStart.getDay() + 6) % 7;
+                const daysInMonth = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate();
+                const weekCount = Math.ceil((offset + daysInMonth) / 7);
+                labels = Array.from({ length: weekCount }, (_, index) => `W${index + 1}`);
+            }
+
+            const buckets = labels.map(() => ({ total: 0, completed: 0 }));
+            periodTasks.forEach((entry) => {
+                const date = new Date(entry.createdAt);
+                const bucketIndex = period === 'week'
+                    ? (date.getDay() + 6) % 7
+                    : Math.floor((date.getDate() - 1 + ((new Date(start).getDay() + 6) % 7)) / 7);
+                buckets[bucketIndex].total += 1;
+                if (entry.completedAt) {
+                    buckets[bucketIndex].completed += 1;
+                }
+            });
+
+            const completed = buckets.reduce((total, bucket) => total + bucket.completed, 0);
+            const percent = periodTasks.length ? Math.round((completed / periodTasks.length) * 100) : 0;
+
+            if (period === 'week') {
+                renderWeeklyBarChart(chart, labels, buckets);
+            } else {
+                renderPeriodChart(chart, labels, buckets, period);
+            }
+            percentLabel.textContent = `${percent}%`;
+            const periodLabel = period === 'week' ? 'this week' : 'this month';
+            caption.textContent = `Completed ${completed} of ${periodTasks.length} tasks tracked ${periodLabel}`;
+        }
+
+        function renderWeeklyBarChart(chart, labels, buckets) {
+            chart.innerHTML = '';
+            const plot = document.createElement('div');
+            plot.className = 'weekly-bar-plot';
+            plot.setAttribute('aria-hidden', 'true');
+            const maxTotal = Math.max(1, ...buckets.map((bucket) => bucket.total));
+
+            buckets.forEach((bucket) => {
+                const percent = bucket.total
+                    ? Math.round((bucket.completed / bucket.total) * 100)
+                    : 0;
+                const column = document.createElement('div');
+                column.className = 'weekly-bar-column';
+
+                const value = document.createElement('span');
+                value.className = 'weekly-bar-value';
+                value.textContent = `${percent}%`;
+
+                const track = document.createElement('div');
+                track.className = 'weekly-bar-track';
+                track.style.height = `${(bucket.total / maxTotal) * 100}%`;
+                const fill = document.createElement('span');
+                fill.className = 'weekly-bar-fill';
+                fill.style.height = `${percent}%`;
+                track.appendChild(fill);
+
+                column.append(value, track);
+                plot.appendChild(column);
+            });
+
+            const axis = document.createElement('div');
+            axis.className = 'chart-axis';
+            axis.style.gridTemplateColumns = `repeat(${labels.length}, minmax(0, 1fr))`;
+            axis.setAttribute('aria-hidden', 'true');
+            labels.forEach((labelText) => {
+                const label = document.createElement('span');
+                label.className = 'chart-axis-label';
+                label.textContent = labelText;
+                axis.appendChild(label);
+            });
+
+            chart.append(plot, axis);
+            const details = buckets.map((bucket, index) => {
+                const percent = bucket.total
+                    ? Math.round((bucket.completed / bucket.total) * 100)
+                    : 0;
+                return `${labels[index]}: ${percent}% (${bucket.completed} of ${bucket.total} complete)`;
+            });
+            chart.setAttribute('aria-label', `Weekly task completion by day: ${details.join('; ')}`);
+        }
+
+        function renderPeriodChart(chart, labels, buckets, period) {
+            chart.innerHTML = '';
+            const svgNamespace = 'http://www.w3.org/2000/svg';
+            const width = 300;
+            const top = 10;
+            const bottom = 88;
+            const svg = document.createElementNS(svgNamespace, 'svg');
+            svg.setAttribute('viewBox', `0 0 ${width} 100`);
+            svg.setAttribute('preserveAspectRatio', 'none');
+            svg.setAttribute('aria-hidden', 'true');
+            svg.setAttribute('class', 'mountain-plot');
+
+            const defs = document.createElementNS(svgNamespace, 'defs');
+            const gradients = [
+                {
+                    id: `${period}RemainingGradient`,
+                    stops: [
+                        { offset: '0%', color: '#cbd5e1', opacity: '0.7' },
+                        { offset: '100%', color: '#e2e8f0', opacity: '0.18' },
+                    ],
+                },
+                {
+                    id: `${period}CompletedGradient`,
+                    stops: [
+                        { offset: '0%', color: '#2dd4bf', opacity: '0.8' },
+                        { offset: '100%', color: '#0f766e', opacity: '0.2' },
+                    ],
+                },
+            ];
+            gradients.forEach((gradientOptions) => {
+                const gradient = document.createElementNS(svgNamespace, 'linearGradient');
+                gradient.setAttribute('id', gradientOptions.id);
+                gradient.setAttribute('x1', '0');
+                gradient.setAttribute('y1', '0');
+                gradient.setAttribute('x2', '0');
+                gradient.setAttribute('y2', '1');
+                gradientOptions.stops.forEach((stopOptions) => {
+                    const stop = document.createElementNS(svgNamespace, 'stop');
+                    stop.setAttribute('offset', stopOptions.offset);
+                    stop.setAttribute('stop-color', stopOptions.color);
+                    stop.setAttribute('stop-opacity', stopOptions.opacity);
+                    gradient.appendChild(stop);
+                });
+                defs.appendChild(gradient);
+            });
+            svg.appendChild(defs);
+
+            [25, 50, 75].forEach((level) => {
+                const gridLine = document.createElementNS(svgNamespace, 'line');
+                const y = bottom - ((bottom - top) * level) / 100;
+                gridLine.setAttribute('x1', '0');
+                gridLine.setAttribute('x2', String(width));
+                gridLine.setAttribute('y1', String(y));
+                gridLine.setAttribute('y2', String(y));
+                gridLine.setAttribute('class', 'mountain-grid');
+                svg.appendChild(gridLine);
+            });
+
+            const maxTotal = Math.max(1, ...buckets.map((bucket) => bucket.total));
+            const getPoints = (getValue) => buckets.map((bucket, index) => {
+                const x = labels.length > 1 ? 6 + (index * (width - 12)) / (labels.length - 1) : width / 2;
+                const value = getValue(bucket);
+                return { x, y: bottom - ((bottom - top) * value) / maxTotal };
+            });
+            const totalPoints = getPoints((bucket) => bucket.total);
+            const completedPoints = getPoints((bucket) => bucket.completed);
+            const getAreaPath = (points) => {
+                const path = points.map((point) => `${point.x} ${point.y}`).join(' L ');
+                return `M 0 ${bottom} L ${path} L ${width} ${bottom} Z`;
+            };
+            const getLinePath = (points) => `M ${points.map((point) => `${point.x} ${point.y}`).join(' L ')}`;
+            const remainingArea = document.createElementNS(svgNamespace, 'path');
+            remainingArea.setAttribute('d', getAreaPath(totalPoints));
+            remainingArea.setAttribute('fill', `url(#${period}RemainingGradient)`);
+            remainingArea.setAttribute('class', 'mountain-area remaining');
+
+            const completedArea = document.createElementNS(svgNamespace, 'path');
+            completedArea.setAttribute('d', getAreaPath(completedPoints));
+            completedArea.setAttribute('fill', `url(#${period}CompletedGradient)`);
+            completedArea.setAttribute('class', 'mountain-area completed');
+
+            const remainingLine = document.createElementNS(svgNamespace, 'path');
+            remainingLine.setAttribute('d', getLinePath(totalPoints));
+            remainingLine.setAttribute('class', 'mountain-line remaining');
+
+            const completedLine = document.createElementNS(svgNamespace, 'path');
+            completedLine.setAttribute('d', getLinePath(completedPoints));
+            completedLine.setAttribute('class', 'mountain-line completed');
+
+            svg.appendChild(remainingArea);
+            svg.appendChild(completedArea);
+            svg.appendChild(remainingLine);
+            svg.appendChild(completedLine);
+
+            completedPoints.forEach((point) => {
+                const marker = document.createElementNS(svgNamespace, 'circle');
+                marker.setAttribute('cx', String(point.x));
+                marker.setAttribute('cy', String(point.y));
+                marker.setAttribute('r', '2.5');
+                marker.setAttribute('class', 'mountain-point');
+                svg.appendChild(marker);
+            });
+
+            const axis = document.createElement('div');
+            axis.className = 'chart-axis';
+            axis.style.gridTemplateColumns = `repeat(${labels.length}, minmax(0, 1fr))`;
+            axis.setAttribute('aria-hidden', 'true');
+            labels.forEach((labelText) => {
+                const label = document.createElement('span');
+                label.className = 'chart-axis-label';
+                label.textContent = labelText;
+                axis.appendChild(label);
+            });
+            chart.appendChild(svg);
+            chart.appendChild(axis);
+
+            const interval = period === 'week' ? 'day' : 'week';
+            const periodLabel = period === 'week' ? 'Weekly' : 'Monthly';
+            const details = buckets.map((bucket, index) => {
+                return `${labels[index]}: ${bucket.completed} of ${bucket.total} complete`;
+            });
+            chart.setAttribute('aria-label', `${periodLabel} task completion by ${interval}: ${details.join('; ')}`);
+        }
+
+        function updatePeriodCharts() {
+            updatePeriodProgress('week', weekProgressChart, weekProgressPercent, weekProgressCaption);
+            updatePeriodProgress('month', monthProgressChart, monthProgressPercent, monthProgressCaption);
+        }
+
+        function recordTaskProgress(task) {
+            const now = Date.now();
+            let entry = progressHistory.find((item) => item.taskId === task.id);
+            if (!entry) {
+                entry = { taskId: task.id, createdAt: task.createdAt || now, completedAt: null };
+                progressHistory.push(entry);
+            }
+            entry.completedAt = task.completed ? now : null;
+            saveProgressHistory();
         }
 
         const funnyMessages = [
@@ -682,17 +525,27 @@
         ];
 
         function updateStats() {
-            const completed = tasks.filter((task) => task.completed).length;
-            const allDay = tasks.filter((task) => task.allDay && !task.completed).length;
+            let completed = 0;
+            let allDay = 0;
+            for (const task of tasks) {
+                if (task.completed) {
+                    completed += 1;
+                } else if (task.allDay) {
+                    allDay += 1;
+                }
+            }
+
             totalCount.textContent = tasks.length;
             doneCount.textContent = completed;
             leftCount.textContent = `${tasks.length - completed} / ${allDay}`;
             const progress = tasks.length ? Math.round((completed / tasks.length) * 100) : 0;
-            progressFill.style.width = `${progress}%`;
-            progressTrack.setAttribute('aria-valuenow', String(progress));
+            dailyProgressChart.style.setProperty('--progress', `${progress}%`);
+            dailyProgressChart.setAttribute('aria-valuenow', String(progress));
+            dailyProgressPercent.textContent = `${progress}%`;
             progressCaption.textContent = tasks.length
                 ? `${progress}% complete · ${completed} of ${tasks.length} tasks done`
                 : '0% complete · Add a task to get started';
+            updatePeriodCharts();
 
             if (tasks.length === 0) {
                 funnyNote.textContent = 'Goal: survive the day with snacks.';
@@ -712,15 +565,22 @@
         }
 
         function getVisibleTasks() {
+            let visibleTasks = tasks;
             if (currentFilter === 'active') {
-                return tasks.filter((task) => !task.completed);
+                visibleTasks = tasks.filter((task) => !task.completed);
+            } else if (currentFilter === 'completed') {
+                visibleTasks = tasks.filter((task) => task.completed);
             }
 
-            if (currentFilter === 'completed') {
-                return tasks.filter((task) => task.completed);
-            }
-
-            return tasks;
+            const priorityRank = { high: 3, medium: 2, low: 1 };
+            return visibleTasks
+                .map((task, order) => ({ task, order }))
+                .sort((first, second) => {
+                    const firstRank = priorityRank[first.task.priority] || priorityRank.medium;
+                    const secondRank = priorityRank[second.task.priority] || priorityRank.medium;
+                    return secondRank - firstRank || first.order - second.order;
+                })
+                .map(({ task }) => task);
         }
 
         function renderTasks() {
@@ -753,6 +613,7 @@
                 checkbox.setAttribute('aria-label', 'Mark task as complete');
                 checkbox.addEventListener('change', () => {
                     task.completed = checkbox.checked;
+                    recordTaskProgress(task);
                     saveTasks();
                     renderTasks();
                 });
@@ -767,12 +628,13 @@
                 const meta = document.createElement('div');
                 meta.className = 'task-meta';
 
+                const priority = task.priority || 'medium';
                 const priorityTag = document.createElement('span');
-                priorityTag.className = `tag priority-${task.priority || 'medium'}`;
-                priorityTag.textContent = (task.priority || 'medium').charAt(0).toUpperCase() + (task.priority || 'medium').slice(1);
+                priorityTag.className = `tag priority-${priority}`;
+                priorityTag.textContent = priority.charAt(0).toUpperCase() + priority.slice(1);
 
                 const allDayTag = document.createElement('span');
-                allDayTag.className = 'tag all-day';
+                allDayTag.className = task.allDay ? 'tag all-day' : 'tag timed';
                 allDayTag.textContent = task.allDay ? 'All day' : 'Timed';
 
                 const timeTag = document.createElement('span');
@@ -793,7 +655,8 @@
 
                 const editBtn = document.createElement('button');
                 editBtn.className = 'edit-btn';
-                editBtn.textContent = 'Edit';
+                editBtn.classList.add('icon-button');
+                setIconButton(editBtn, 'edit', `Edit task: ${task.text}`);
                 editBtn.addEventListener('click', () => {
                     const updatedText = prompt('Edit task', task.text);
                     if (updatedText !== null) {
@@ -808,7 +671,8 @@
 
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'delete-btn';
-                deleteBtn.textContent = 'Delete';
+                deleteBtn.classList.add('icon-button');
+                setIconButton(deleteBtn, 'delete', `Delete task: ${task.text}`);
                 deleteBtn.addEventListener('click', () => {
                     tasks = tasks.filter((t) => t.id !== task.id);
                     saveTasks();
@@ -834,14 +698,19 @@
                 return;
             }
 
-            tasks.unshift({
-                id: Date.now().toString(),
+            const createdAt = Date.now();
+            const task = {
+                id: createdAt.toString(),
+                createdAt,
                 text,
                 completed: false,
                 priority: taskPriority.value,
                 allDay: allDayToggle.checked,
                 time: taskTime.value || null,
-            });
+            };
+            tasks.unshift(task);
+            progressHistory.push({ taskId: task.id, createdAt, completedAt: null });
+            saveProgressHistory();
 
             if (!taskText) {
                 taskInput.value = '';
@@ -859,12 +728,53 @@
         function setFilter(filter) {
             currentFilter = filter;
             filterButtons.forEach((button) => {
-                button.classList.toggle('active', button.dataset.filter === filter);
+                const isActive = button.dataset.filter === filter;
+                button.classList.toggle('active', isActive);
+                button.setAttribute('aria-pressed', String(isActive));
             });
             renderTasks();
         }
 
-        addBtn.addEventListener('click', addTask);
+        function setActiveNavigation(hash) {
+            const activeLink = Array.from(navigationLinks).find((link) => link.getAttribute('href') === hash)
+                || navigationLinks[0];
+            navigationLinks.forEach((link) => {
+                const isActive = link === activeLink;
+                link.classList.toggle('is-active', isActive);
+                if (isActive) {
+                    link.setAttribute('aria-current', 'location');
+                } else {
+                    link.removeAttribute('aria-current');
+                }
+            });
+        }
+
+        function updateActiveNavigationOnScroll() {
+            if (!window.matchMedia('(max-width: 600px)').matches) {
+                return;
+            }
+
+            const activationLine = window.innerHeight * 0.32;
+            const activeSection = Array.from(navigationLinks)
+                .map((link) => document.querySelector(link.getAttribute('href')))
+                .filter((section) => section && section.getBoundingClientRect().top <= activationLine)
+                .sort((first, second) => first.getBoundingClientRect().top - second.getBoundingClientRect().top)
+                .pop();
+            if (activeSection) {
+                setActiveNavigation(`#${activeSection.id}`);
+            }
+        }
+
+        navigationLinks.forEach((link) => {
+            link.addEventListener('click', () => setActiveNavigation(link.getAttribute('href')));
+        });
+        window.addEventListener('hashchange', () => {
+            setActiveNavigation(window.location.hash || '#planner');
+        });
+        window.addEventListener('scroll', updateActiveNavigationOnScroll, { passive: true });
+        window.addEventListener('resize', updateActiveNavigationOnScroll);
+
+        addBtn.addEventListener('click', () => addTask());
 
         taskInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
@@ -918,6 +828,8 @@
         }
 
         setTheme(localStorage.getItem(THEME_STORAGE_KEY) || 'light');
+        setActiveNavigation(window.location.hash || '#planner');
+        updateActiveNavigationOnScroll();
         renderTasks();
     </script>
 </body>

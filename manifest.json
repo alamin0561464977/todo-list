@@ -1,13 +1,13 @@
 {
   "id": "./",
-  "name": "Daily To-Do Planner",
-  "short_name": "To-Do Planner",
+  "name": "TaskFlow - Daily Planner",
+  "short_name": "TaskFlow",
   "description": "A simple daily planner for tasks, priorities, and activities.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f8fafc",
-  "theme_color": "#4f46e5",
+  "theme_color": "#0f766e",
   "icons": [
     {
       "src": "./app-icon.svg",
